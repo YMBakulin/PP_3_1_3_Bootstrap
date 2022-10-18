@@ -103,7 +103,7 @@
                                                                             data-bs-dismiss="modal"
                                                                             aria-label="Close"></button>
                                                                 </div>
-                                                                <form th:action="@{/{id}(id=${user.id})}"
+                                                                <form th:action="@{/admin/{id}(id=${user.id})}"
                                                                       th:object="${user}" th:method="PATCH">
                                                                     <div class="modal-body col-md text-center">
                                                                         <br>
@@ -182,7 +182,7 @@
                                                                             aria-label="Close"></button>
                                                                 </div>
                                                                 <form class="modal-body col-md text-center"
-                                                                      th:action="@{/{id}(id=${user.id})}"
+                                                                      th:action="@{/admin/{id}(id=${user.id})}"
                                                                       th:method="DELETE">
                                                                     <div class="modal-body col-md">
                                                                         <label for="id"><b>ID</b></label>

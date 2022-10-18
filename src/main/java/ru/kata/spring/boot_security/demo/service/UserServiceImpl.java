@@ -10,7 +10,7 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final
@@ -30,21 +30,26 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        users.stream().forEach(u -> u.setStringOfAllUserRoles(u.getStringOfRoles(u)));
+        return users;
     }
 
     public User getUserById(long id) {
         return userRepository.getById(id);
     }
 
+    @Transactional
     public void saveUser(User user) {
         userRepository.save(user);
     }
 
+    @Transactional
     public void updateUser(User user) {
         userRepository.saveAndFlush(user);
     }
 
+    @Transactional
     public void removeUserById(long id) {
         userRepository.deleteById(id);
         userRepository.flush();

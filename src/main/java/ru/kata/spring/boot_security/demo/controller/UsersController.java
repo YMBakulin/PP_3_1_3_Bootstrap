@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 import java.security.Principal;
 
 @Controller
+@RequestMapping("/user")
 public class UsersController {
 
     private final UserService userService;
@@ -20,13 +21,7 @@ public class UsersController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/")
-    public String getUsers(Model model) {
-        model.addAttribute("user", userService.getUserById(2));
-        return "redirect:/user";
-    }
-
-    @GetMapping("/user")
+    @GetMapping()
     public String showUserPage(Model model, Principal principal) {
         User user = (User) userService.loadUserByUsername(principal.getName());
         user.setStringOfAllUserRoles(user.getStringOfRoles(user));

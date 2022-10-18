@@ -4,19 +4,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
 
     private final UserService userService;
@@ -27,16 +24,13 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/admin")
+    @GetMapping()
     public String showAdminPage(@ModelAttribute("user") User user, Model model, Principal principal) {
         List<User> users = userService.getAllUsers();
-        users.stream().forEach(u -> u.setStringOfAllUserRoles(u.getStringOfRoles(u)));
         model.addAttribute("users", users.stream().distinct().collect(Collectors.toList()));
 
         User adminUser = (User) userService.loadUserByUsername(principal.getName());
-        List userRoles = adminUser.getRoles().stream()
-                .map(x -> x.getRole().substring(5))
-                .sorted().collect(Collectors.toList());
+        List<String> userRoles = roleService.getListOfNamesUserRoles(adminUser);
         model.addAttribute("adminUser", adminUser);
         model.addAttribute("roles", userRoles);
         model.addAttribute("allRoles", roleService.getAllRoles());
@@ -51,7 +45,7 @@ public class AdminController {
         return "new";
     }
 
-    @PostMapping("/admin")
+    @PostMapping()
     public String addNewUser(@ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
